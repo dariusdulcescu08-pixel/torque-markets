@@ -283,8 +283,8 @@ export async function cryptoTickers(syms) {
   const o = {}; for (const x of d) o[x.symbol.replace(/USDT$/, '')] = { price: +x.lastPrice, chg24: +x.priceChangePercent, vol: +x.quoteVolume, hi: +x.highPrice, lo: +x.lowPrice };
   return o;
 }
-export async function cryptoKlines(sym, interval = '1d', limit = 1000) {
-  const d = await bin(`/api/v3/klines?symbol=${sym}USDT&interval=${interval}&limit=${limit}`);
+export async function cryptoKlines(sym, interval = '1d', limit = 1000, endTime = null) {
+  const d = await bin(`/api/v3/klines?symbol=${sym}USDT&interval=${interval}&limit=${limit}${endTime ? `&endTime=${endTime}` : ''}`);
   return d.map((k) => ({ t: k[0], o: +k[1], h: +k[2], l: +k[3], c: +k[4], v: +k[7] }));
 }
 export async function fearGreed(limit = 30) {
@@ -386,32 +386,33 @@ export function buildModel(seriesList, { H = 7, fngMap = null, fee = 0.2 } = {})
   const tr = rows.filter((r) => r.t < c1 - emb), va = rows.filter((r) => r.t >= c1 && r.t < c2 - emb), te = rows.filter((r) => r.t >= c2);
   const m1 = trainLR(tr.map((r) => r.x), tr.map((r) => r.y));
   va.forEach((r) => (r.p = predictLR(m1, r.x)));
-  let thr = 0.6, best = -1;
-  for (let t = 0.52; t <= 0.701; t += 0.02) {
-    const s = va.filter((r) => r.p >= t); if (s.length < Math.max(25, va.length * 0.04)) continue;
-    const hit = s.filter((r) => r.y).length / s.length; if (hit > best) { best = hit; thr = +t.toFixed(2); }
-  }
+  const minN = Math.max(25, va.length * 0.04);
+  let thr = 0.6, bestL = -1, thrS = 0.4, bestS = -1;
+  for (let t = 0.52; t <= 0.701; t += 0.02) { const s = va.filter((r) => r.p >= t); if (s.length < minN) continue; const h = s.filter((r) => r.y).length / s.length; if (h > bestL) { bestL = h; thr = +t.toFixed(2); } }
+  for (let t = 0.48; t >= 0.299; t -= 0.02) { const s = va.filter((r) => r.p <= t); if (s.length < minN) continue; const h = s.filter((r) => !r.y).length / s.length; if (h > bestS) { bestS = h; thrS = +t.toFixed(2); } }
   const m2 = trainLR([...tr, ...va].map((r) => r.x), [...tr, ...va].map((r) => r.y));
   te.forEach((r) => (r.p = predictLR(m2, r.x)));
   const hitOf = (s) => (s.length ? s.filter((r) => r.y).length / s.length : null), avgOf = (s) => (s.length ? s.reduce((a, r) => a + r.r, 0) / s.length : null);
-  const sel = te.filter((r) => r.p >= thr);
-  const buckets = [[0, 0.45], [0.45, 0.5], [0.5, 0.55], [0.55, 0.6], [0.6, 1.01]].map(([a, b]) => { const s = te.filter((r) => r.p >= a && r.p < b); return { a, b, n: s.length, hit: hitOf(s), avg: avgOf(s) }; });
-  // strategie: intră când p ≥ prag, ține H zile, fără suprapuneri pe același activ, cu comision
-  const trades = [], free = {};
-  for (const r of [...te].sort((a, b) => a.t - b.t)) { if (r.p < thr || (free[r.sym] && r.t < free[r.sym])) continue; free[r.sym] = r.t + emb; trades.push(r.r - fee); }
+  const selL = te.filter((r) => r.p >= thr), selS = te.filter((r) => r.p <= thrS);
+  const buckets = [[0, 0.4], [0.4, 0.45], [0.45, 0.5], [0.5, 0.55], [0.55, 0.6], [0.6, 1.01]].map(([a, b]) => { const s = te.filter((r) => r.p >= a && r.p < b); return { a, b, n: s.length, hit: hitOf(s), avg: avgOf(s) }; });
+  const strat = (cond, sign) => { const tr2 = [], free = {}; for (const r of [...te].sort((a, b) => a.t - b.t)) { if (!cond(r) || (free[r.sym] && r.t < free[r.sym])) continue; free[r.sym] = r.t + emb; tr2.push(sign * r.r - fee); } return { n: tr2.length, win: tr2.length ? tr2.filter((x) => x > 0).length / tr2.length : null, avg: tr2.length ? tr2.reduce((a, b) => a + b, 0) / tr2.length : null }; };
+  const base = hitOf(te), hitL = hitOf(selL), downS = selS.length ? 1 - hitOf(selS) : null;
   const full = trainLR(rows.map((r) => r.x), rows.map((r) => r.y));
   const imp = full.w.slice(0, FEAT.length).map((w, j) => ({ f: FEAT[j], w })).sort((a, b) => Math.abs(b.w) - Math.abs(a.w));
+  const sL = strat((r) => r.p >= thr, 1), sS = strat((r) => r.p <= thrS, -1);
+  const edgeL = hitL != null && selL.length >= 20 && hitL - base >= 0.03 && sL.n >= 10 && sL.avg > 0, edgeS = downS != null && selS.length >= 20 && downS - (1 - base) >= 0.03 && sS.n >= 10 && sS.avg > 0;
   return {
-    model: full, thr, H, imp, nRows: rows.length, trainedAt: Date.now(), syms: seriesList.map((x) => x.sym),
-    test: { n: te.length, from: c2, acc: te.filter((r) => (r.p >= 0.5) === (r.y === 1)).length / te.length, base: hitOf(te), avgAll: avgOf(te),
-      nSel: sel.length, hitSel: hitOf(sel), avgSel: avgOf(sel), buckets, trades: trades.length, tradeWin: trades.length ? trades.filter((x) => x > 0).length / trades.length : null, tradeAvg: trades.length ? trades.reduce((a, b) => a + b, 0) / trades.length : null },
+    model: full, thr, thrS, H, imp, nRows: rows.length, trainedAt: Date.now(), syms: seriesList.map((x) => x.sym), edgeL, edgeS,
+    test: { n: te.length, from: c2, acc: te.filter((r) => (r.p >= 0.5) === (r.y === 1)).length / te.length, base, avgAll: avgOf(te),
+      nSel: selL.length, hitSel: hitL, avgSel: avgOf(selL), nSelS: selS.length, downSel: downS, avgSelS: selS.length ? -avgOf(selS) : null,
+      buckets, long: sL, short: sS },
   };
 }
 export const probNow = (M, S, fngMap) => (M ? predictLR(M.model, featAt(S, S.n - 1, fngMap)) : null);
 
 // plan de trade: stop la 2×ATR, țintă la 2R
-export function planFor(a, price = a.price) {
-  if (!a.atr) return null;
-  const stop = price - 2 * a.atr, target = price + 2 * (price - stop);
-  return { entry: price, stop, target, rr: 2, riskPct: ((price - stop) / price) * 100 };
+export function planFor(a, price = a.price, side = 'long') {
+  if (!a.atr || !price) return null;
+  const d = side === 'short' ? -1 : 1, stop = price - d * 2 * a.atr, target = price + d * 4 * a.atr;
+  return { side, entry: price, stop, target, rr: 2, riskPct: ((2 * a.atr) / price) * 100 };
 }
