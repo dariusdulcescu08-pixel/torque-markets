@@ -1,0 +1,27 @@
+name: Monitor piață
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+concurrency: { group: monitor, cancel-in-progress: false }
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --omit=dev
+      - uses: actions/cache/restore@v4
+        with: { path: monitor/state.json, key: mstate-${{ github.run_id }}, restore-keys: mstate- }
+      - run: node monitor/monitor.js
+        env:
+          PUSH_SUBSCRIPTION: ${{ secrets.PUSH_SUBSCRIPTION }}
+          VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}
+          VAPID_SUBJECT: ${{ secrets.VAPID_SUBJECT }}
+          TWELVE_KEY: ${{ secrets.TWELVE_KEY }}
+          FINNHUB_KEY: ${{ secrets.FINNHUB_KEY }}
+      - uses: actions/cache/save@v4
+        if: always()
+        with: { path: monitor/state.json, key: mstate-${{ github.run_id }} }

@@ -1,0 +1,13 @@
+{
+  "name": "torque-markets",
+  "version": "1.0.0",
+  "description": "Torque Markets PWA + monitor",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "web-push": "^4.0.0"
+  },
+  "type": "module",
+  "private": true
+}
