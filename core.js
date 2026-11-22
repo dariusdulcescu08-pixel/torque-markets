@@ -395,12 +395,12 @@ export function buildModel(seriesList, { H = 7, fngMap = null, fee = 0.2 } = {})
   const hitOf = (s) => (s.length ? s.filter((r) => r.y).length / s.length : null), avgOf = (s) => (s.length ? s.reduce((a, r) => a + r.r, 0) / s.length : null);
   const selL = te.filter((r) => r.p >= thr), selS = te.filter((r) => r.p <= thrS);
   const buckets = [[0, 0.4], [0.4, 0.45], [0.45, 0.5], [0.5, 0.55], [0.55, 0.6], [0.6, 1.01]].map(([a, b]) => { const s = te.filter((r) => r.p >= a && r.p < b); return { a, b, n: s.length, hit: hitOf(s), avg: avgOf(s) }; });
-  const strat = (cond, sign) => { const tr2 = [], free = {}; for (const r of [...te].sort((a, b) => a.t - b.t)) { if (!cond(r) || (free[r.sym] && r.t < free[r.sym])) continue; free[r.sym] = r.t + emb; tr2.push(sign * r.r - fee); } return { n: tr2.length, win: tr2.length ? tr2.filter((x) => x > 0).length / tr2.length : null, avg: tr2.length ? tr2.reduce((a, b) => a + b, 0) / tr2.length : null }; };
+  const strat = (cond, sign) => { const tr2 = [], free = {}; for (const r of [...te].sort((a, b) => a.t - b.t)) { if (!cond(r) || (free[r.sym] && r.t < free[r.sym])) continue; free[r.sym] = r.t + emb; tr2.push(sign * r.r - fee); } const n = tr2.length, avg = n ? tr2.reduce((a, b) => a + b, 0) / n : null, sd = n > 1 ? Math.sqrt(tr2.reduce((a, b) => a + (b - avg) ** 2, 0) / (n - 1)) : null; return { n, win: n ? tr2.filter((x) => x > 0).length / n : null, avg, t: sd ? avg / (sd / Math.sqrt(n)) : 0 }; };
   const base = hitOf(te), hitL = hitOf(selL), downS = selS.length ? 1 - hitOf(selS) : null;
   const full = trainLR(rows.map((r) => r.x), rows.map((r) => r.y));
   const imp = full.w.slice(0, FEAT.length).map((w, j) => ({ f: FEAT[j], w })).sort((a, b) => Math.abs(b.w) - Math.abs(a.w));
   const sL = strat((r) => r.p >= thr, 1), sS = strat((r) => r.p <= thrS, -1);
-  const edgeL = hitL != null && selL.length >= 20 && hitL - base >= 0.03 && sL.n >= 10 && sL.avg > 0, edgeS = downS != null && selS.length >= 20 && downS - (1 - base) >= 0.03 && sS.n >= 10 && sS.avg > 0;
+  const edgeL = hitL != null && selL.length >= 60 && hitL - base >= 0.03 && sL.n >= 20 && sL.t >= 1.65, edgeS = downS != null && selS.length >= 60 && downS - (1 - base) >= 0.03 && sS.n >= 20 && sS.t >= 1.65;
   return {
     model: full, thr, thrS, H, imp, nRows: rows.length, trainedAt: Date.now(), syms: seriesList.map((x) => x.sym), edgeL, edgeS,
     test: { n: te.length, from: c2, acc: te.filter((r) => (r.p >= 0.5) === (r.y === 1)).length / te.length, base, avgAll: avgOf(te),
