@@ -34,3 +34,11 @@ De știut:
 - **Anthropic**: analiză AI reală pe datele live. Plătită per folosire, separat de abonamentul Claude. Fără ea ai analiza locală (reguli + statistici).
 - **Twelve Data**: acțiuni și ETF-uri (gratis, 800 cereri/zi).
 - **Finnhub**: știri de bursă (gratis).
+
+## Ce e nou în v2
+- **Model AI** antrenat pe ~1000 de zile din toate monedele din watchlist, testat pe ultimele 30% din date (pe care nu le-a văzut). Vezi cifrele reale în tab-ul Demo.
+- **Învățare din greșeli**: fiecare semnal e verificat automat după 7 zile; tipurile care greșesc des își pierd notificările până își revin (Alerte → Ce am învățat).
+- **Demo**: cont virtual cu stop/țintă automate și auto-pilot AI.
+- **Portofoliu**: manual sau sincronizat din Binance cu o cheie API doar de citire (Enable Reading, fără trading și fără retrageri).
+- **Live**: prețuri prin WebSocket, actualizate în timp real.
+- **Alerte de preț** personalizate și liniște noaptea.

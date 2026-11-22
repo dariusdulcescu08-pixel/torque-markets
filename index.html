@@ -13,177 +13,154 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0b1726;--card:#12233a;--card2:#182d48;--line:#22395a;--ink:#e8f0fa;--mut:#8aa0b8;--sky:#4fb3e8;--or:#ff7a1a;--up:#22c38e;--dn:#ff5a6e;--st:env(safe-area-inset-top);--sb:env(safe-area-inset-bottom);color-scheme:dark}
-*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;overscroll-behavior:none}
-body{padding:calc(var(--st) + 8px) 0 calc(var(--sb) + 74px)}
-h1,h2,h3,.num{font-family:Outfit,Inter,sans-serif;font-variant-numeric:tabular-nums}
-h2{font-size:20px;margin:22px 16px 10px;font-weight:600}h3{font-size:16px;margin:0 0 8px;font-weight:600}
-a{color:var(--sky)}button{font:inherit;color:inherit}
-.top{display:flex;align-items:center;gap:10px;padding:6px 16px 4px}
-.top h1{font-size:22px;margin:0;flex:1;font-weight:700;letter-spacing:-.2px}.top h1 b{color:var(--or)}
-.stat{font-size:12px;color:var(--mut);display:flex;align-items:center;gap:6px}.dot{width:8px;height:8px;border-radius:50%;background:var(--up)}.dot.err{background:var(--dn)}.dot.ld{background:var(--or);animation:p 1s infinite}
-@keyframes p{50%{opacity:.3}}@media(prefers-reduced-motion:reduce){.dot.ld{animation:none}}
-.ib{width:44px;height:44px;border-radius:12px;border:0;background:var(--card);position:relative;display:grid;place-items:center}
-.ib i{position:absolute;top:6px;right:6px;background:var(--or);color:#000;font:700 10px Inter;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;font-style:normal;padding:0 4px}
-.v{display:none}.v.on{display:block}
-.card{background:var(--card);border-radius:18px;margin:0 12px 12px;padding:16px}
-.hero{display:grid;grid-template-columns:150px minmax(0,1fr);gap:14px;align-items:center}
-.kv{display:grid;gap:8px}.kv div{display:flex;justify-content:space-between;gap:8px;font-size:14px}.kv span{color:var(--mut)}
-.big{font:700 34px/1 Outfit,Inter,sans-serif;font-variant-numeric:tabular-nums}
-.up{color:var(--up)}.dn{color:var(--dn)}.mut{color:var(--mut)}.sm{font-size:13px}
-.row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}.row:last-child{border:0}
-.sym{font:600 16px Outfit,Inter,sans-serif;width:58px}.sym small{display:block;font:400 11px Inter;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.px{flex:1;text-align:right;font-variant-numeric:tabular-nums}.px small{display:block;font-size:12px}
-.chip{font:600 12px Inter;padding:4px 9px;border-radius:999px;white-space:nowrap;background:var(--card2)}
-.t-up2{background:#0f4d3a;color:#5ff0bd}.t-up{background:#123f35;color:#5fd9a8}.t-flat{background:#24344b;color:#b6c6d8}.t-dn{background:#46222c;color:#ff9aa8}.t-dn2{background:#5a1a26;color:#ffb3bd}
-.spark{width:70px;height:28px}
-.opp{display:grid;gap:10px}.opp .o{background:var(--card2);border-radius:14px;padding:12px;cursor:pointer}
-.o .h{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
-.al{padding:10px 0;border-bottom:1px solid var(--line)}.al:last-child{border:0}.al b{font-weight:600;font-size:14px;display:block}.al p{margin:2px 0 0;font-size:13px;color:var(--mut)}
-.al.high b::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--or);margin-right:6px;vertical-align:2px}
-.seg{display:flex;gap:6px;margin:0 12px 12px;overflow-x:auto}.seg button{border:0;background:var(--card);padding:9px 14px;border-radius:999px;font-weight:600;font-size:14px;min-height:40px;white-space:nowrap}.seg button.on{background:var(--sky);color:#04121f}
-.sig{cursor:pointer}.sig .h{display:flex;align-items:center;gap:10px}.sig .h .sym{width:auto;flex:1}
-.bar{height:6px;border-radius:3px;background:var(--line);margin:10px 0 8px;position:relative}.bar i{position:absolute;top:-3px;width:3px;height:12px;border-radius:2px;background:var(--ink)}.bar::after{content:'';position:absolute;left:50%;top:-2px;height:10px;width:1px;background:var(--mut)}
-.bar{background:linear-gradient(90deg,#ff5a6e,#3a4a63 45%,#3a4a63 55%,#22c38e)}
-.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(11,23,38,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:6px 4px calc(var(--sb) + 6px);z-index:20}
-.tabs button{border:0;background:none;display:grid;justify-items:center;gap:2px;font-size:11px;color:var(--mut);min-height:48px;padding:4px 0}.tabs button.on{color:var(--sky)}.tabs svg{width:24px;height:24px}
-.sheet{position:fixed;inset:0;background:var(--bg);z-index:30;overflow-y:auto;padding:calc(var(--st) + 8px) 0 calc(var(--sb) + 30px);transform:translateY(100%);transition:transform .28s ease}.sheet{visibility:hidden}.sheet.on{transform:none;visibility:visible}
-@media(prefers-reduced-motion:reduce){.sheet{transition:none}}
-.sh{display:flex;align-items:center;gap:10px;padding:4px 12px 10px}.sh h1{flex:1;margin:0;font-size:24px}
-.fig{position:relative;height:300px;margin:0 4px}.fig canvas{position:absolute;inset:0;width:100%;height:100%}
-.tip{position:absolute;top:4px;left:8px;font-size:12px;color:var(--mut);pointer-events:none;font-variant-numeric:tabular-nums}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid2 div{background:var(--card2);border-radius:12px;padding:10px}.grid2 span{display:block;font-size:12px;color:var(--mut)}.grid2 b{font:600 16px Outfit,Inter,sans-serif;font-variant-numeric:tabular-nums}
-.rs{display:flex;gap:10px;padding:7px 0;font-size:14px;border-bottom:1px solid var(--line)}.rs:last-child{border:0}.rs b{font:600 14px Outfit,Inter,sans-serif;width:34px;text-align:right;flex:none}
-table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}th{color:var(--mut);font-weight:500;text-align:right;padding:6px 4px}th:first-child,td:first-child{text-align:left}td{padding:8px 4px;border-top:1px solid var(--line);text-align:right}tr.base td{color:var(--mut);font-style:italic}
-.scroll{overflow-x:auto}
-label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
-input,select,textarea{width:100%;font:16px Inter;color:var(--ink);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:11px 12px;min-height:44px}
+/* Torque Markets — sistem: 8px grid, 4 mărimi de text (28/19/15/12), un accent albastru pentru acțiuni, portocaliu doar pentru alerte */
+:root{--bg:#0B1726;--c1:#12233A;--c2:#182D48;--ln:#1C3050;--ink:#E8F0FA;--sub:#C6D3E2;--mut:#8AA0B8;--sky:#4FB3E8;--or:#FF7A1A;--up:#22C38E;--dn:#FF5A6E;--st:env(safe-area-inset-top);--sb:env(safe-area-inset-bottom);--H:Outfit,Inter,system-ui,sans-serif;color-scheme:dark}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif;overscroll-behavior-y:none;-webkit-font-smoothing:antialiased}
+body{padding:calc(var(--st) + 4px) 0 calc(var(--sb) + 92px)}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}a{color:var(--sky);text-decoration:none}
+.num,b,.big{font-variant-numeric:tabular-nums}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px 4px}
+.hd h1{font:700 28px/1.1 var(--H);margin:0;letter-spacing:-.3px}
+.sub{color:var(--mut);font-size:13px;padding:2px 20px 0;display:flex;align-items:center;gap:6px}
+.live{width:7px;height:7px;border-radius:50%;background:var(--mut)}.live.on{background:var(--up);box-shadow:0 0 0 0 rgba(34,195,142,.6);animation:pulse 2s infinite}.live.err{background:var(--dn)}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(34,195,142,0)}100%{box-shadow:0 0 0 0 rgba(34,195,142,0)}}
+.ib{width:40px;height:40px;border-radius:20px;background:var(--c2);display:grid;place-items:center;flex:none;position:relative}.ib svg{width:20px;height:20px}
+.ib i{position:absolute;top:-2px;right:-2px;background:var(--or);color:#160800;font:700 10px Inter;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;font-style:normal;padding:0 4px}
+.v{display:none}.v.on{display:block;animation:fade .18s ease}@keyframes fade{from{opacity:.4}}
+.sec{display:flex;justify-content:space-between;align-items:baseline;padding:22px 20px 10px}.sec h3{font:600 19px var(--H);margin:0}.sec a,.sec button{color:var(--sky);font-size:13px;font-weight:500}
+.wrap{padding:0 16px;display:grid;gap:10px}
+.card{background:var(--c1);border-radius:20px;padding:14px 16px}
+.pill{font-size:12px;font-weight:600;border-radius:999px;padding:5px 10px;white-space:nowrap;display:inline-block}.p-up{background:#0F4D3A;color:#5FF0BD}.p-flat{background:#24344B;color:#B6C6D8}.p-dn{background:#46222C;color:#FF9AA8}.p-ai{background:#1B3150;color:#8FD3FF}.p-or{background:#4A2A12;color:#FFB27A}
+.up{color:var(--up)}.dn{color:var(--dn)}.mut{color:var(--mut)}.sm{font-size:13px}.xs{font-size:12px}
+.verdict{border-radius:24px;padding:20px;background:linear-gradient(150deg,#3A1620 0%,#162741 70%)}.verdict.g{background:linear-gradient(150deg,#0F3B33 0%,#162741 70%)}.verdict.n{background:linear-gradient(150deg,#1B3150 0%,#162741 70%)}
+.verdict .k{font-size:12px;font-weight:600;color:#FF9AA8}.verdict.g .k{color:#5FD9A8}.verdict.n .k{color:#8FD3FF}
+.verdict h2{font:600 24px/1.17 var(--H);margin:6px 0 8px}.verdict p{margin:0;color:var(--sub);font-size:14px;line-height:1.45}
+.fg{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:var(--mut)}.fgb{flex:1;height:6px;border-radius:3px;background:linear-gradient(90deg,#FF5A6E,#FF9A5A 30%,#7D8CA3 50%,#7FD4A8 70%,#22C38E);position:relative}.fgb i{position:absolute;top:-4px;width:14px;height:14px;border-radius:7px;background:#fff;border:3px solid #0B1726;margin-left:-7px;transition:left .6s}
+.act{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btn{background:var(--sky);color:#04121F;font-weight:600;font-size:14px;border-radius:14px;padding:11px 16px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px}.btn.g{background:rgba(255,255,255,.08);color:var(--ink)}.btn.up{background:var(--up);color:#03140D}.btn.dn{background:var(--dn);color:#1A0306}.btn.w{width:100%}.btn:disabled{opacity:.45}.btn:active{transform:scale(.98)}
+.port{display:flex;justify-content:space-between;align-items:center;gap:12px}.port .big{font:700 26px var(--H)}
+.alloc{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:12px;gap:2px}.alloc i{display:block;height:6px}
+.car{display:flex;gap:10px;overflow-x:auto;padding:0 16px;scroll-snap-type:x mandatory;scrollbar-width:none}.car::-webkit-scrollbar{display:none}
+.oc{flex:none;width:262px;scroll-snap-align:start;background:var(--c1);border-radius:20px;padding:14px;cursor:pointer}
+.oc .h{display:flex;justify-content:space-between;align-items:center;gap:8px}.oc .h b{font:700 17px var(--H)}.oc p{font-size:13px;color:var(--sub);margin:8px 0 10px;line-height:1.4;min-height:36px}
+.lv3{display:flex;gap:6px}.lv3 div{background:var(--c2);border-radius:9px;padding:5px 8px;font-size:11px;color:var(--mut);flex:1}.lv3 b{display:block;font-size:12px;color:var(--ink);font-weight:600}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--ln);cursor:pointer}.row:last-child{border:0}
+.ic{width:36px;height:36px;border-radius:18px;background:var(--c2);display:grid;place-items:center;font:700 15px var(--H);color:var(--sky);flex:none}
+.nm{flex:1}.nm b{display:block;font-size:15px;font-weight:600}.nm span{font-size:12px;color:var(--mut)}
+.pr{text-align:right}.pr b{display:block;font-size:15px;font-weight:600;transition:color .3s}.pr span{font-size:12px;font-weight:600}
+.flash-u{color:var(--up)!important}.flash-d{color:var(--dn)!important}
+.spark{flex:none}
+.seg{display:flex;gap:6px;padding:4px 16px 14px;overflow-x:auto;scrollbar-width:none}.seg::-webkit-scrollbar{display:none}.seg button{padding:9px 14px;border-radius:999px;background:var(--c1);font-size:14px;font-weight:600;min-height:40px;white-space:nowrap}.seg button.on{background:var(--ink);color:var(--bg)}
+.sig{cursor:pointer}.sig .h{display:flex;align-items:center;gap:12px}
+.meter{height:12px;position:relative;margin:10px 0 6px}.meter:before{content:"";position:absolute;left:0;right:0;top:3px;height:6px;border-radius:3px;background:var(--ln)}.meter i{position:absolute;top:3px;height:6px;border-radius:3px}.meter:after{content:"";position:absolute;left:calc(50% - 1px);top:0;width:2px;height:12px;background:var(--mut)}
+.why{font-size:13px;color:var(--mut)}
+.news{display:block;padding:12px 0;border-bottom:1px solid var(--ln);color:inherit}.news:last-child{border:0}.news b{font-weight:600;font-size:15px;line-height:1.35;display:block}.news .m{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12px;color:var(--mut)}
+.al{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--ln);cursor:pointer}.al:last-child{border:0}.al .d{width:10px;height:10px;border-radius:5px;margin-top:5px;flex:none}.al b{font-size:14px;font-weight:600;display:block;line-height:1.35}.al span{font-size:12px;color:var(--mut)}
+.grp{font-size:12px;font-weight:600;color:var(--mut);padding:16px 20px 8px}
+.tg{width:48px;height:28px;border-radius:14px;background:#24344B;position:relative;flex:none;transition:background .2s}.tg:after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:11px;background:#fff;transition:transform .2s}.tg.on{background:var(--up)}.tg.on:after{transform:translateX(20px)}
+.add{border:1.5px dashed #2D4D78;border-radius:16px;padding:14px;text-align:center;color:var(--sky);font-weight:600;font-size:14px;width:100%}
+.big{font:700 40px/1.05 var(--H)}
+.tf{display:flex;gap:4px;padding:12px 20px 4px}.tf button{font-size:13px;font-weight:600;color:var(--mut);padding:7px 11px;border-radius:9px;min-height:36px}.tf button.on{background:var(--c2);color:var(--ink)}
+.fig{position:relative;height:250px;margin:0 8px 0 16px}.fig canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.tip{position:absolute;left:0;top:-2px;font-size:11px;color:var(--mut);pointer-events:none;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;max-width:100%}
+.pg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.pg div{background:var(--c2);border-radius:14px;padding:10px}.pg span{font-size:11px;color:var(--mut);display:block}.pg b{font:600 16px var(--H)}
+.rr{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:13px;color:var(--sub)}.rrb{flex:1;height:8px;border-radius:4px;display:flex;overflow:hidden}.rrb i{display:block}
+.ins{border-radius:20px;padding:16px;background:linear-gradient(150deg,#0F3B33,#12233A 70%)}.ins .k{font-size:12px;color:#5FD9A8;font-weight:600}.ins p{font-size:15px;line-height:1.4;margin:6px 0 0}
+.wb{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:12px;color:var(--mut)}.wbb{flex:1;height:6px;border-radius:3px;background:var(--ln);overflow:hidden}.wbb i{display:block;height:6px;background:var(--up)}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.g2 div{background:var(--c2);border-radius:14px;padding:10px 12px}.g2 span{display:block;font-size:12px;color:var(--mut)}.g2 b{font:600 16px var(--H)}
+.rs{display:flex;gap:10px;padding:7px 0;font-size:14px;border-bottom:1px solid var(--ln)}.rs:last-child{border:0}.rs b{width:34px;text-align:right;flex:none;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}th{color:var(--mut);font-weight:500;text-align:right;padding:6px 4px}th:first-child,td:first-child{text-align:left}td{padding:8px 4px;border-top:1px solid var(--ln);text-align:right}tr.base td{color:var(--mut);font-style:italic}
+details summary{cursor:pointer;color:var(--sky);font-size:13px;font-weight:500;padding:4px 0;list-style:none}details summary::-webkit-details-marker{display:none}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 6px;font-weight:500}
+input,select,textarea{width:100%;font:16px Inter;color:var(--ink);background:var(--c2);border:1px solid var(--ln);border-radius:12px;padding:11px 12px;min-height:46px}
 input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--sky);outline-offset:1px}
-.btn{border:0;border-radius:12px;background:var(--sky);color:#04121f;font-weight:600;padding:12px 16px;min-height:44px;cursor:pointer}.btn.g{background:var(--card2);color:var(--ink)}.btn.o{background:var(--or);color:#160800}.btn:disabled{opacity:.5}
-.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.news{display:block;text-decoration:none;color:inherit;padding:12px 0;border-bottom:1px solid var(--line)}.news:last-child{border:0}.news b{font-weight:600;font-size:15px;line-height:1.35;display:block}.news .m{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12px;color:var(--mut)}
-.imp{background:var(--or);color:#160800;font-weight:700;border-radius:6px;padding:1px 6px;font-size:11px}
-.chat{display:grid;gap:10px;margin:0 12px}.msg{padding:12px 14px;border-radius:16px;max-width:92%;font-size:15px;line-height:1.5;overflow-wrap:anywhere}.msg.u{background:var(--sky);color:#04121f;justify-self:end;border-bottom-right-radius:4px}.msg.a{background:var(--card);border-bottom-left-radius:4px}
-.msg h4{margin:10px 0 4px;font:600 15px Outfit,Inter,sans-serif}.msg ul{margin:4px 0;padding-left:18px}.msg p{margin:4px 0}
-.ask{position:sticky;bottom:calc(var(--sb) + 70px);display:flex;gap:8px;padding:10px 12px;background:linear-gradient(transparent,var(--bg) 30%)}
-.ask textarea{min-height:46px;max-height:120px;resize:none}
-.qs{display:flex;gap:6px;overflow-x:auto;padding:0 12px 10px}.qs button{flex:none;border:1px solid var(--line);background:none;border-radius:999px;padding:8px 12px;font-size:13px;min-height:38px}
-.toast{position:fixed;left:12px;right:12px;top:calc(var(--st) + 8px);background:var(--card2);border:1px solid var(--line);border-left:4px solid var(--or);border-radius:14px;padding:12px 14px;z-index:50;transform:translateY(-160%);transition:transform .25s}.toast.on{transform:none}.toast b{display:block}.toast p{margin:2px 0 0;font-size:13px;color:var(--mut)}
-.banner{background:#1b3150;border:1px solid #2d4d78}
-.empty{color:var(--mut);font-size:14px;text-align:center;padding:18px 8px}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;background:var(--card2);padding:10px;border-radius:10px;max-height:140px;overflow:auto}
-.disc{font-size:12px;color:var(--mut);margin:6px 16px 20px}
+.f2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.f3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:8px}
+.qk{display:flex;gap:6px;margin-top:8px}.qk button{flex:1;background:var(--c2);border-radius:10px;padding:8px 0;font-size:13px;font-weight:600;min-height:38px}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(11,23,38,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--ln);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px calc(var(--sb) + 6px);z-index:20}
+.tabs button{display:grid;justify-items:center;gap:3px;font-size:11px;color:var(--mut);min-height:48px;padding:2px 0;position:relative}.tabs button.on{color:var(--sky);font-weight:600}.tabs svg{width:24px;height:24px}
+.tabs i{position:absolute;top:0;left:calc(50% + 6px);background:var(--or);color:#160800;font:700 10px Inter;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;font-style:normal;padding:0 4px}
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:30;overflow-y:auto;padding:calc(var(--st) + 4px) 0 calc(var(--sb) + 32px);transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.2,.8,.2,1),visibility .28s}.sheet.on{transform:none;visibility:visible}
+.shd{display:flex;align-items:center;gap:10px;padding:8px 16px 6px;position:sticky;top:calc(var(--st) * -1);z-index:2;background:var(--bg)}.shd h2{flex:1;margin:0;font:600 19px var(--H)}
+.chat{display:grid;gap:10px;padding:0 16px}.msg{padding:12px 14px;border-radius:18px;max-width:92%;font-size:15px;line-height:1.5;overflow-wrap:anywhere}.msg.u{background:var(--sky);color:#04121F;justify-self:end;border-bottom-right-radius:6px}.msg.a{background:var(--c1);border-bottom-left-radius:6px}
+.msg h4{margin:10px 0 4px;font:600 15px var(--H)}.msg ul{margin:4px 0;padding-left:18px}.msg p{margin:4px 0}
+.ask{position:sticky;bottom:calc(var(--sb) + 76px);display:flex;gap:8px;padding:12px 16px;background:linear-gradient(transparent,var(--bg) 35%)}.ask textarea{min-height:46px;max-height:120px;resize:none}
+.qs{display:flex;gap:6px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}.qs::-webkit-scrollbar{display:none}.qs button{flex:none;border:1px solid var(--ln);border-radius:999px;padding:8px 12px;font-size:13px;min-height:38px}
+.toast{position:fixed;left:12px;right:12px;top:calc(var(--st) + 8px);background:var(--c2);border:1px solid var(--ln);border-left:4px solid var(--or);border-radius:16px;padding:12px 14px;z-index:60;transform:translateY(-170%);transition:transform .25s;box-shadow:0 12px 30px rgba(0,0,0,.4)}.toast.on{transform:none}.toast b{display:block;font-size:14px}.toast p{margin:2px 0 0;font-size:13px;color:var(--mut)}
+.sk{background:linear-gradient(90deg,var(--c1),var(--c2),var(--c1));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:14px}@keyframes sk{to{background-position:-200% 0}}
+.empty{color:var(--mut);font-size:14px;text-align:center;padding:16px 8px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;background:var(--c2);padding:10px;border-radius:10px;max-height:140px;overflow:auto}
+.disc{font-size:12px;color:var(--mut);margin:16px 20px 8px;line-height:1.5}
+.onb{position:fixed;inset:0;z-index:80;background:var(--bg);display:flex;flex-direction:column;padding:calc(var(--st) + 40px) 24px calc(var(--sb) + 24px)}.onb .art{flex:1;display:grid;place-items:center}.onb h2{font:700 28px/1.15 var(--H);margin:0 0 10px}.onb p{color:var(--sub);margin:0 0 24px;font-size:15px}.dots{display:flex;gap:6px;margin-bottom:18px}.dots i{width:8px;height:8px;border-radius:4px;background:var(--ln)}.dots i.on{background:var(--sky);width:22px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(min-width:700px){body{max-width:520px;margin:0 auto}.tabs{max-width:520px;margin:0 auto}}
 </style>
 </head>
 <body>
-<header class="top">
-  <h1>Torque <b>Markets</b></h1>
-  <div class="stat"><span class="dot ld" id="dot"></span><span id="upd">pornește…</span></div>
-  <button class="ib" id="bell" aria-label="Alerte"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg><i id="badge" hidden>0</i></button>
-</header>
 
-<!-- PIAȚĂ -->
-<section class="v" id="v-piata">
-  <div class="card banner" id="install" hidden><h3>Pune-o pe Home Screen</h3><div class="sm">În Safari: butonul <b>Share</b> → <b>Add to Home Screen</b>. Doar așa iOS îți dă notificări și o rulează ca aplicație.</div></div>
-  <div class="card hero">
-    <svg id="gauge" viewBox="0 0 150 96" role="img" aria-label="Fear and Greed"></svg>
-    <div class="kv" id="glob"></div>
+<section class="v" id="v-acasa">
+  <div class="hd"><h1 id="hello">Bună</h1><button class="ib" data-open="settings" aria-label="Setări"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button></div>
+  <div class="sub"><span class="live" id="liveDot"></span><span id="liveTxt">pornește…</span></div>
+  <div class="wrap" style="margin-top:14px">
+    <div class="card" id="install" hidden style="background:#1B3150"><b>Pune-o pe Home Screen</b><div class="sm mut" style="margin-top:4px">În Safari: <b>Share → Add to Home Screen</b>. Doar așa primești notificări.</div></div>
+    <div class="verdict" id="verdict"><div class="sk" style="height:150px"></div></div>
   </div>
-  <h2>Cele mai bune setup-uri acum</h2>
-  <div class="card opp" id="opps"><div class="empty">Se calculează…</div></div>
-  <h2>Alerte recente</h2>
-  <div class="card" id="alertsMini"><div class="empty">Nicio alertă încă.</div></div>
-  <h2>Watchlist</h2>
-  <div class="card" id="watch"></div>
+  <div class="sec"><h3>Portofoliul tău</h3><button data-open="portfolio">Editează</button></div>
+  <div class="wrap"><div class="card" id="portCard" data-open="portfolio" style="cursor:pointer"></div></div>
+  <div class="sec"><h3>Setup-uri de urmărit</h3><button data-go="semnale">Toate</button></div>
+  <div class="car" id="opps"><div class="oc sk" style="height:150px"></div><div class="oc sk" style="height:150px"></div></div>
+  <div class="sec"><h3>Știri care contează</h3><button data-open="news">Toate</button></div>
+  <div class="wrap"><div class="card" id="newsMini"><div class="sk" style="height:120px"></div></div></div>
+  <div class="sec"><h3>Watchlist</h3><button data-open="settings">Editează</button></div>
+  <div class="wrap"><div class="card" id="watch"></div></div>
+  <p class="disc">Instrument de analiză, nu consultanță financiară. Semnalele au o rată de reușire măsurată, nu certitudine.</p>
 </section>
 
-<!-- SEMNALE -->
 <section class="v" id="v-semnale">
-  <h2>Semnale</h2>
-  <div class="seg" id="segK"><button data-k="crypto" class="on">Crypto</button><button data-k="stocks">Bursă</button></div>
-  <div id="sigs"></div>
-  <p class="disc">Scorul (−100…+100) combină trend, momentum, RSI, Bollinger, volum și sentiment. Nu e garanție, e un filtru care îți arată unde merită să te uiți.</p>
+  <div class="hd"><h1>Semnale</h1></div>
+  <div class="seg" id="segK" style="margin-top:12px"><button data-k="crypto" class="on">Crypto</button><button data-k="stocks">Acțiuni</button><button data-k="port">Portofoliu</button></div>
+  <div class="wrap" id="sigs"></div>
+  <p class="disc">Scorul (−100…+100) combină trend, momentum, RSI, Bollinger, volum și sentiment. Procentul AI e probabilitatea ca prețul să fie mai sus peste 7 zile, după un model testat pe date pe care nu le-a văzut la antrenare.</p>
 </section>
 
-<!-- AI -->
+<section class="v" id="v-demo">
+  <div class="hd"><h1>Demo</h1><button class="ib" id="newTrade" aria-label="Tranzacție nouă"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg></button></div>
+  <div class="sub">Bani virtuali, prețuri reale. Exersezi fără risc.</div>
+  <div class="wrap" style="margin-top:14px" id="demoTop"></div>
+  <div class="sec"><h3>Poziții deschise</h3><span class="xs mut" id="posN"></span></div>
+  <div class="wrap"><div class="card" id="positions"></div></div>
+  <div class="sec"><h3>Cât de bun e AI-ul, cifre reale</h3></div>
+  <div class="wrap" id="perf"></div>
+  <div class="sec"><h3>Istoric tranzacții</h3><button id="resetSim">Resetează</button></div>
+  <div class="wrap"><div class="card" id="hist"></div></div>
+</section>
+
 <section class="v" id="v-ai">
-  <h2>Analist AI</h2>
-  <div class="card banner" id="aiKey" hidden><h3>Conectează Claude</h3><div class="sm">Fără cheie primești analiza locală (reguli + statistici). Cu cheie de API Anthropic primești analiză AI completă pe datele live. Pune cheia în Setări.</div></div>
+  <div class="hd"><h1>Analist AI</h1></div>
+  <div class="wrap" style="margin:12px 0 12px"><div class="card" id="aiKey" hidden style="background:#1B3150"><b>Conectează Claude</b><div class="sm mut" style="margin-top:4px">Fără cheie primești analiza locală (reguli, model și statistici). Cu cheie Anthropic primești analiză AI completă pe datele live. O pui în Setări.</div></div></div>
   <div class="qs" id="qs"></div>
   <div class="chat" id="chat"></div>
   <form class="ask" id="askF"><textarea id="askI" rows="1" placeholder="Întreabă ceva…"></textarea><button class="btn" id="askB">Trimite</button></form>
 </section>
 
-<!-- ȘTIRI -->
-<section class="v" id="v-stiri">
-  <h2>Știri</h2>
-  <div class="seg" id="segN"><button data-n="imp" class="on">Importante</button><button data-n="all">Toate</button><button data-n="crypto">Crypto</button><button data-n="bursă">Bursă</button></div>
-  <div class="card" id="news"><div class="empty">Se încarcă…</div></div>
-</section>
-
-<!-- ALERTE -->
 <section class="v" id="v-alerte">
-  <h2>Toate alertele</h2>
-  <div class="card" id="alertsAll"></div>
-  <div class="btns" style="margin:0 12px"><button class="btn g" id="clrA">Golește lista</button></div>
+  <div class="hd"><h1>Alerte</h1></div>
+  <div class="seg" id="segA" style="margin-top:12px"><button data-a="rec" class="on">Recente</button><button data-a="mine">Ale mele</button><button data-a="learn">Ce am învățat</button></div>
+  <div id="alBody"></div>
 </section>
 
-<!-- SETĂRI -->
-<section class="v" id="v-setari">
-  <h2>Notificări</h2>
-  <div class="card">
-    <div class="sm" id="nStat"></div>
-    <div class="btns"><button class="btn" id="nOn">Activează notificările</button><button class="btn g" id="nTest">Test</button></div>
-    <label><input type="checkbox" id="nEn" style="width:auto;min-height:0;margin-right:8px">Trimite notificări de sistem</label>
-  </div>
-  <h2>Notificări în fundal (app închisă)</h2>
-  <div class="card">
-    <div class="sm">iOS nu lasă o aplicație web să ruleze în fundal. Pentru alerte cu app-ul închis, un monitor pe GitHub verifică piața la 15 minute și îți trimite push. Apasă butonul, copiază codul și pune-l în GitHub (pașii sunt în ghid).</div>
-    <div class="btns"><button class="btn o" id="pSub">Generează codul de push</button><button class="btn g" id="pCopy" hidden>Copiază</button></div>
-    <pre id="pOut" hidden></pre>
-  </div>
-  <h2>Praguri alerte</h2>
-  <div class="card grid2" style="gap:10px">
-    <div><label for="th1">Mișcare în 1h (%)</label><input id="th1" type="number" step="0.5" inputmode="decimal"></div>
-    <div><label for="thd">Crypto 24h (%)</label><input id="thd" type="number" step="0.5" inputmode="decimal"></div>
-    <div><label for="ths">Acțiuni 24h (%)</label><input id="ths" type="number" step="0.5" inputmode="decimal"></div>
-    <div><label for="thv">Volum (× normal)</label><input id="thv" type="number" step="0.5" inputmode="decimal"></div>
-  </div>
-  <h2>Watchlist</h2>
-  <div class="card">
-    <label for="wC">Crypto (simboluri Binance, perechi USDT)</label><input id="wC" autocapitalize="characters">
-    <label for="wS">Acțiuni / ETF (max 8)</label><input id="wS" autocapitalize="characters">
-  </div>
-  <h2>Chei API</h2>
-  <div class="card">
-    <label for="kA">Anthropic (Claude) — <a href="https://console.anthropic.com/settings/keys">ia cheie</a></label><input id="kA" type="password" autocomplete="off" placeholder="sk-ant-…">
-    <label for="kM">Model AI</label><select id="kM"><option value="claude-haiku-5-5">Haiku 5.5 (rapid, ieftin)</option><option value="claude-sonnet-5-5">Sonnet 5.5 (recomandat)</option><option value="claude-opus-5-5">Opus 5.5 (cel mai bun, scump)</option></select>
-    <label for="kT">Twelve Data (acțiuni) — <a href="https://twelvedata.com/register">gratis</a></label><input id="kT" type="password" autocomplete="off">
-    <label for="kF">Finnhub (știri bursă) — <a href="https://finnhub.io/register">gratis</a></label><input id="kF" type="password" autocomplete="off">
-    <p class="sm mut">Cheile stau doar pe telefonul tău. Cheia Anthropic e plătită per folosire, separat de abonamentul Claude.</p>
-    <div class="btns"><button class="btn" id="save">Salvează</button></div>
-  </div>
-  <p class="disc">Torque Markets e un instrument de analiză, nu consultanță financiară. Semnalele au rată de reușire, nu certitudine. Nu investi bani de care ai nevoie și nu folosi leverage.</p>
-</section>
-
-<!-- DETALIU -->
-<div class="sheet" id="sheet" aria-modal="true" role="dialog">
-  <div class="sh"><button class="ib" id="back" aria-label="Înapoi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg></button><h1 id="dT"></h1><span class="chip" id="dL"></span></div>
-  <div id="dBody"></div>
-</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true"><div class="shd"><button class="ib" id="back" aria-label="Înapoi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button><h2 id="shT"></h2><span id="shR"></span></div><div id="shB"></div></div>
 
 <nav class="tabs" id="tabs">
-  <button data-v="piata"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-7"/></svg>Piață</button>
-  <button data-v="semnale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/><circle cx="12" cy="12" r="3"/></svg>Semnale</button>
+  <button data-v="acasa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Acasă</button>
+  <button data-v="semnale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/></svg>Semnale</button>
+  <button data-v="demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M8 6V4h8v2M3 12h18"/></svg>Demo</button>
   <button data-v="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>AI</button>
-  <button data-v="stiri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>Știri</button>
-  <button data-v="setari"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Setări</button>
+  <button data-v="alerte"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>Alerte<i id="badge" hidden>0</i></button>
 </nav>
 <div class="toast" id="toast"></div>
-
+<div class="onb" id="onb" hidden></div>
 <script type="module" src="app.js"></script>
 </body>
 </html>

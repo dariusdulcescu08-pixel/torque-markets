@@ -200,8 +200,9 @@ function stat(name, r7, r30) {
 /* ---------------- alerte ---------------- */
 const day = (t) => new Date(t).toISOString().slice(0, 10);
 const hour = (t) => new Date(t).toISOString().slice(0, 13);
-const f2 = (x) => (x >= 0 ? '+' : '') + x.toFixed(1) + '%';
-export const fmtP = (p) => (p == null ? '—' : p >= 1000 ? p.toLocaleString('en-US', { maximumFractionDigits: 0 }) : p >= 1 ? p.toFixed(2) : p.toPrecision(4));
+const f2 = (x) => (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(1).replace('.', ',') + '%';
+const nfr = (x, d) => x.toLocaleString('ro-RO', { minimumFractionDigits: d, maximumFractionDigits: d });
+export const fmtP = (p) => (p == null || !isFinite(p) ? '—' : p >= 1000 ? nfr(p, 0) : p >= 1 ? nfr(p, 2) : p >= 0.01 ? nfr(p, 4) : p.toPrecision(3));
 
 export function detectAlerts({ sym, kind = 'crypto', S, a, h1 = null, live = null, th = CONFIG.th }) {
   const out = [], now = Date.now(), D = day(now), i = S.n - 1;
@@ -326,4 +327,91 @@ export function newsAlerts(items, minImp = 5, maxAgeMs = 3 * 3600e3) {
     key: 'news:' + x.title.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 50), level: x.imp >= 7 ? 'high' : 'med', sym: x.tags[0] || 'ȘTIRI',
     title: `📰 ${x.sent > 0 ? '🟢' : x.sent < 0 ? '🔴' : '⚪️'} ${x.title}`.slice(0, 140), body: `${x.src}${x.tags.length ? ' · ' + x.tags.join(', ') : ''}`, url: x.url, t: x.t,
   }));
+}
+
+/* ---------------- model AI (regresie logistică, validare walk-forward) ---------------- */
+export const FEAT = ['Randament 1 zi', 'Randament 7 zile', 'Randament 30 zile', 'RSI', 'Distanță EMA20', 'Distanță EMA50', 'Distanță EMA200', 'EMA50 peste EMA200',
+  'MACD', 'Poziție în Bollinger', 'Volatilitate (ATR)', 'Volum relativ', 'Distanță de maxim 90z', 'Fear & Greed'];
+export const dayKey = (t) => new Date(t).toISOString().slice(0, 10);
+export async function fngHistory() {
+  const d = await jget('https://api.alternative.me/fng/?limit=0', 20000); const m = {};
+  for (const x of d.data) m[dayKey(+x.timestamp * 1000)] = +x.value;
+  return m;
+}
+export function featAt(S, i, fngMap = null) {
+  if (i < 200 || i >= S.n) return null;
+  const c = S.c[i], cl = (x, a = 3) => Math.max(-a, Math.min(a, x));
+  let hi = -Infinity; for (let j = i - 90; j <= i; j++) hi = Math.max(hi, S.h[j]);
+  const bw = S.bb.up[i] - S.bb.lo[i];
+  const f = [Math.log(c / S.c[i - 1]) * 10, Math.log(c / S.c[i - 7]) * 3, Math.log(c / S.c[i - 30]), (S.rsi[i] - 50) / 20,
+    cl((c / S.e20[i] - 1) * 10), cl((c / S.e50[i] - 1) * 5), cl((c / S.e200[i] - 1) * 2), S.e50[i] > S.e200[i] ? 1 : -1,
+    cl((S.macd.hist[i] / c) * 100), bw > 0 ? cl((c - S.bb.lo[i]) / bw - 0.5) : 0, (S.atr[i] / c) * 20,
+    S.vAvg[i] ? cl(Math.log((S.v[i] + 1) / (S.vAvg[i] + 1))) : 0, (c / hi - 1) * 3, fngMap ? ((fngMap[dayKey(S.t[i])] ?? 50) - 50) / 25 : 0];
+  return f.every(Number.isFinite) ? f : null;
+}
+export function trainLR(X, y, { l2 = 0.02, it = 400, lr = 0.5 } = {}) {
+  const n = X.length, d = X[0].length, mu = new Array(d).fill(0), sd = new Array(d).fill(0);
+  for (const x of X) x.forEach((v, j) => (mu[j] += v / n));
+  for (const x of X) x.forEach((v, j) => (sd[j] += (v - mu[j]) ** 2 / n));
+  for (let j = 0; j < d; j++) sd[j] = Math.sqrt(sd[j]) || 1;
+  const Z = X.map((x) => x.map((v, j) => (v - mu[j]) / sd[j]));
+  const w = new Array(d + 1).fill(0);
+  for (let k = 0; k < it; k++) {
+    const g = new Array(d + 1).fill(0);
+    for (let i = 0; i < n; i++) {
+      let s = w[d]; for (let j = 0; j < d; j++) s += w[j] * Z[i][j];
+      const e = 1 / (1 + Math.exp(-s)) - y[i];
+      for (let j = 0; j < d; j++) g[j] += e * Z[i][j]; g[d] += e;
+    }
+    for (let j = 0; j < d; j++) w[j] -= lr * (g[j] / n + l2 * w[j]);
+    w[d] -= (lr * g[d]) / n;
+  }
+  return { mu, sd, w };
+}
+export function predictLR(m, x) {
+  if (!m || !x) return null; const d = m.mu.length; let s = m.w[d];
+  for (let j = 0; j < d; j++) s += m.w[j] * ((x[j] - m.mu[j]) / m.sd[j]);
+  return 1 / (1 + Math.exp(-s));
+}
+// seriesList: [{sym,S}] — antrenează pe 55%, alege pragul pe 55–70%, testează pe ultimele 30% (date nevăzute), apoi reantrenează pe tot.
+export function buildModel(seriesList, { H = 7, fngMap = null, fee = 0.2 } = {}) {
+  const rows = [];
+  for (const { sym, S } of seriesList) for (let i = 200; i < S.n - H; i++) {
+    const x = featAt(S, i, fngMap); if (!x) continue;
+    rows.push({ x, y: S.c[i + H] > S.c[i] ? 1 : 0, r: (S.c[i + H] / S.c[i] - 1) * 100, t: S.t[i], sym });
+  }
+  if (rows.length < 400) return null;
+  const ts = rows.map((r) => r.t).sort((a, b) => a - b), q = (p) => ts[Math.floor(ts.length * p)], emb = H * 864e5;
+  const c1 = q(0.55), c2 = q(0.7);
+  const tr = rows.filter((r) => r.t < c1 - emb), va = rows.filter((r) => r.t >= c1 && r.t < c2 - emb), te = rows.filter((r) => r.t >= c2);
+  const m1 = trainLR(tr.map((r) => r.x), tr.map((r) => r.y));
+  va.forEach((r) => (r.p = predictLR(m1, r.x)));
+  let thr = 0.6, best = -1;
+  for (let t = 0.52; t <= 0.701; t += 0.02) {
+    const s = va.filter((r) => r.p >= t); if (s.length < Math.max(25, va.length * 0.04)) continue;
+    const hit = s.filter((r) => r.y).length / s.length; if (hit > best) { best = hit; thr = +t.toFixed(2); }
+  }
+  const m2 = trainLR([...tr, ...va].map((r) => r.x), [...tr, ...va].map((r) => r.y));
+  te.forEach((r) => (r.p = predictLR(m2, r.x)));
+  const hitOf = (s) => (s.length ? s.filter((r) => r.y).length / s.length : null), avgOf = (s) => (s.length ? s.reduce((a, r) => a + r.r, 0) / s.length : null);
+  const sel = te.filter((r) => r.p >= thr);
+  const buckets = [[0, 0.45], [0.45, 0.5], [0.5, 0.55], [0.55, 0.6], [0.6, 1.01]].map(([a, b]) => { const s = te.filter((r) => r.p >= a && r.p < b); return { a, b, n: s.length, hit: hitOf(s), avg: avgOf(s) }; });
+  // strategie: intră când p ≥ prag, ține H zile, fără suprapuneri pe același activ, cu comision
+  const trades = [], free = {};
+  for (const r of [...te].sort((a, b) => a.t - b.t)) { if (r.p < thr || (free[r.sym] && r.t < free[r.sym])) continue; free[r.sym] = r.t + emb; trades.push(r.r - fee); }
+  const full = trainLR(rows.map((r) => r.x), rows.map((r) => r.y));
+  const imp = full.w.slice(0, FEAT.length).map((w, j) => ({ f: FEAT[j], w })).sort((a, b) => Math.abs(b.w) - Math.abs(a.w));
+  return {
+    model: full, thr, H, imp, nRows: rows.length, trainedAt: Date.now(), syms: seriesList.map((x) => x.sym),
+    test: { n: te.length, from: c2, acc: te.filter((r) => (r.p >= 0.5) === (r.y === 1)).length / te.length, base: hitOf(te), avgAll: avgOf(te),
+      nSel: sel.length, hitSel: hitOf(sel), avgSel: avgOf(sel), buckets, trades: trades.length, tradeWin: trades.length ? trades.filter((x) => x > 0).length / trades.length : null, tradeAvg: trades.length ? trades.reduce((a, b) => a + b, 0) / trades.length : null },
+  };
+}
+export const probNow = (M, S, fngMap) => (M ? predictLR(M.model, featAt(S, S.n - 1, fngMap)) : null);
+
+// plan de trade: stop la 2×ATR, țintă la 2R
+export function planFor(a, price = a.price) {
+  if (!a.atr) return null;
+  const stop = price - 2 * a.atr, target = price + 2 * (price - stop);
+  return { entry: price, stop, target, rr: 2, riskPct: ((price - stop) / price) * 100 };
 }
